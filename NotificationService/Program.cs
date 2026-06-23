@@ -8,7 +8,8 @@ using NotificationService.Repositories;
 using Elastic.Clients.Elasticsearch;
 using NotificationService.Configuration;
 using ProtoBuf.Grpc.Server;
-    
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -27,6 +28,14 @@ builder.Services.AddScoped<INotificationGrpcService, NotificationGrpcService>();
 builder.Services.AddSingleton(new ElasticsearchClient(
 
     new ElasticsearchClientSettings(new Uri("http://localhost:9200"))));
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5111, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 
 var app = builder.Build();
 

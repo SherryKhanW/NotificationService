@@ -2,7 +2,6 @@ using NotificationService.Email;
 using NotificationService.Grpc.Contracts;
 using NotificationService.Models;
 using NotificationService.Repositories;
-using ProtoBuf.Grpc;
 
 namespace NotificationService.Grpc.Services;
 
@@ -20,8 +19,7 @@ public class NotificationGrpcService : INotificationGrpcService
     }
 
     public async Task<SendOtpEmailResponse> SendOtpEmailAsync(
-        SendOtpEmailRequest request,
-        CallContext context = default)
+        SendOtpEmailRequest request)
     {
         var letter = new EmailLetter
         {

@@ -1,12 +1,11 @@
-using ProtoBuf.Grpc;
-using ProtoBuf.Grpc.Configuration;
+using System.ServiceModel;
 
 namespace NotificationService.Grpc.Contracts;
 
-[Service]
+[ServiceContract]
 public interface INotificationGrpcService
 {
+    [OperationContract]
     Task<SendOtpEmailResponse> SendOtpEmailAsync(
-        SendOtpEmailRequest request,
-        CallContext context = default);
+        SendOtpEmailRequest request);
 }
