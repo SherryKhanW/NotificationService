@@ -19,15 +19,19 @@ public class GenericRepository<T> : IRepository<T> where T : class
     
     protected async Task LogAsync(string message)
     {
-        var indexName = $"logs-{typeof(T).Name.ToLower()}-repository";
+        const string indexName = "logs-notificationservice-default";
 
         await Elasticsearch.IndexAsync(new
         {
-            Message = message,
-            Entity = typeof(T).Name,
-            Repository = $"{typeof(T).Name}Repository",
-            Timestamp = DateTime.UtcNow
-        }, i => i.Index(indexName));
+            @timestamp = DateTime.UtcNow,
+            serviceName = "NotificationService",
+            message = message,
+            repositoryName = typeof(T).Name,
+            operation = "RepositoryAction",
+            success = true
+        }, i => i
+            .Index(indexName)
+            .OpType(Elastic.Clients.Elasticsearch.OpType.Create));
     }
     
     public async Task<T> CreateAsync(T entity)
